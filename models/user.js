@@ -38,7 +38,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.methods.generateToken = function () {
-    return jwt.sign({userId: this._id, name: this.name}, "process.env.JWT_SECRET", {expiresIn: "3d",
+    return jwt.sign({userId: this._id, name: this.name}, process.env.JWT_SECRET, {expiresIn: "3d",
 })
 }
 

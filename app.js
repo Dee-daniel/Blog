@@ -1,21 +1,25 @@
 require ("dotenv").config();
 const express = require("express");
 const app = express();
-const PORT = 3700
+const PORT = process.env.PORT || 3000;
 const mongoose = require("mongoose");
-
+const cors = require('cors')
 mongoose.set("strictQuery", true);
-const notFound = require("./middleware/notFound")
-const authRouter = require('./routes/authRouter')
-const journalRouter = require('./routes/journalRouter')
-const auth = require('./middleware/authentication')
+const notFound = require("./middleware/notFound");
+const authRouter = require('./routes/authRouter');
+const journalRouter = require('./routes/journalRouter');
+const auth = require('./middleware/authentication');
+
 
 //middleware
 app.use(express.json());
+app.use(cors())
+
+
 
 //routes
 app.use("/api/v1", authRouter);
-app.use("/api/v1/journal", journalRouter, auth, journalRouter);
+app.use("/api/v1/journal", auth, journalRouter);
 
 //error route
 app.use(notFound);

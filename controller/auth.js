@@ -1,5 +1,5 @@
 const Users = require('../models/user');
-const jwt = require("jsonwebtoken");
+const handleError = require('../utils/handlerror');
 
 
 const register = async (req, res) => {
@@ -12,8 +12,8 @@ const register = async (req, res) => {
         const token = user.generateToken();
         res.status(201).json({data: {name: user.name, email: user.email}, token }) 
     } catch (error) {
-        console.log(error);
-        res.json(error)
+        const errors = handleError(error);
+        res.json(400).json({errors})
     }   
 };
 
@@ -25,17 +25,17 @@ const login = async (req, res) => {
     try {
         const user = await Users.findOne({email});
         if (!user){
-            return res.status(400).json({success: false})
+           throw Error ('incorrect Email')
         }
         const authenticated = await user.comparePassword(password);
         if(!authenticated){
-            return res.status(400).json({success: false})  
+            throw Error("incorrect Password") 
         }
         const token = user.generateToken();
         return res.status(200).json({user:{name: user.name, email: user.email }, token})
     }catch (error) {
-        console.log(error);
-        res.json(error)
+        const errors = handleError(error);
+        res.json(400).json({errors})
     }   
 };
 
